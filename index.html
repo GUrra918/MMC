@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Simulering Trading Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            width: 80%;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        .price {
+            font-size: 24px;
+            text-align: center;
+        }
+        .buttons {
+            text-align: center;
+            margin: 20px 0;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .portfolio {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .candlestick {
+            width: 100%;
+            height: 150px;
+            background: #dfdfdf;
+            margin: 20px 0;
+            position: relative;
+        }
+        .candle {
+            position: absolute;
+            bottom: 0;
+            width: 10%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Melker Meme Coin Trading Game</h1>
+        <div class="price" id="price">Aktuellt pris: 10.00 SEK</div>
+        <div class="candlestick" id="candlestick"></div>
+        <div class="buttons">
+            <button id="buyButton">Köp</button>
+            <button id="sellButton">Sälj</button>
+        </div>
+        <div class="portfolio" id="portfolio">Dina pengar: 1000 SEK</div>
+    </div>
+    <script>
+        let currentPrice = 10.00;
+        let money = 1000;
+        let ownedCoins = 0;
+
+        function updatePrice() {
+            currentPrice += (Math.random() - 0.5); // Simulera prisfluktuation
+            currentPrice = Math.max(currentPrice, 0); // Se till att priset inte blir negativt
+            document.getElementById('price').innerText = `Aktuellt pris: ${currentPrice.toFixed(2)} SEK`;
+            drawCandlestick();
+        }
+
+        function drawCandlestick() {
+            const candlestick = document.getElementById('candlestick');
+            candlestick.innerHTML = ''; // Rensa tidigare ljus
+            const totalCandles = 10; // Antal ljus i vår graf
+
+            for (let i = 0; i < totalCandles; i++) {
+                const candle = document.createElement('div');
+                candle.className = 'candle';
+                candle.style.left = `${(i / totalCandles) * 100}%`;
+                candle.style.height = `${(Math.random() * 100) + 10}px`; // Slumptal för ljusens höjd
+                candle.style.backgroundColor = (Math.random() > 0.5) ? 'green' : 'red'; // Grön eller röd
+                candlestick.appendChild(candle);
+            }
+        }
+
+        function trade(action) {
+            if (action === 'buy' && money >= currentPrice) {
+                ownedCoins += 1;
+                money -= currentPrice;
+            } else if (action === 'sell' && ownedCoins > 0) {
+                ownedCoins -= 1;
+                money += currentPrice;
+            }
+            document.getElementById('portfolio').innerText = `Dina pengar: ${money.toFixed(2)} SEK`;
+        }
+
+        document.getElementById('buyButton').addEventListener('click', () => trade('buy'));
+        document.getElementById('sellButton').addEventListener('click', () => trade('sell'));
+
+        setInterval(updatePrice, 1000); // Uppdatera priset varje sekund
+        drawCandlestick(); // Rita aktuell candlestick på början
+    </script>
+</body>
+</html>
